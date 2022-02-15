@@ -1,0 +1,2 @@
+model_dir,batch_size,batches_per_epoch,n_epochs,device,BVAE.beta,BVAE.encoder_str,BVAE.decoder_str,BVAE.latent_size,BVAE.encoder_params.data_dim,BVAE.encoder_params.layers,BVAE.encoder_params.nonlin,BVAE.encoder_params.output_nonlin,BVAE.decoder_params.data_dim,BVAE.decoder_params.layers,BVAE.decoder_params.nonlin,BVAE.decoder_params.output_nonlin
+./results/test1,100,1280,5,cpu,1,mlp,mlp,2,1600,[256],relu,relu,1600,[256],relu,relu

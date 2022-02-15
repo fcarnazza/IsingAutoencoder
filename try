@@ -1,0 +1,11 @@
+        In the study of quantum phenomena,
+        the interaction of the system under investigation with its environment is the norm
+        rather than exception. Moreover, even if full knowledge of the wave-function is often unattainable,
+        important information can be retrieved by local degrees of freedom. Typically, it is possible to single out and measure just a subsystem, while regarding the rest as a bath.
+        In the simplest case, the evolution of the reduced quantum state obtained by tracing out the degrees of
+        freedom of the environment is governed by a Markovian, i.e. time
+        independent, quantum master equation, also known as Lindblad master equation.
+        Here we investigate if it is possible to obtain a fully interpretable neural network whose parameters can be
+        exactly mapped to a Lindblad generator, and henceforth whose dynamics is automatically ensured to be
+        physical. We probe our neural network in a class of spin models, and find that in certain
+        situations the network can indeed provide good predictions.

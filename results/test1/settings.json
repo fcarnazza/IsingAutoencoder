@@ -1,0 +1,29 @@
+{
+    "BVAE": {
+        "beta": 1,
+        "decoder_params": {
+            "data_dim": 1600,
+            "layers": [
+                256
+            ],
+            "nonlin": "relu",
+            "output_nonlin": "relu"
+        },
+        "decoder_str": "mlp",
+        "encoder_params": {
+            "data_dim": 1600,
+            "layers": [
+                256
+            ],
+            "nonlin": "relu",
+            "output_nonlin": "relu"
+        },
+        "encoder_str": "mlp",
+        "latent_size": 2
+    },
+    "batch_size": 100,
+    "batches_per_epoch": 1280,
+    "device": "cpu",
+    "model_dir": "./results/test1",
+    "n_epochs": 5
+}
