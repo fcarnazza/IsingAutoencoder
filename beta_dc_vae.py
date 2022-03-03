@@ -89,18 +89,24 @@ class ConvDecoder(nn.Module):
         super(ConvDecoder, self).__init__()
         self.conv1 = nn.ConvTranspose2d(input_dim, 512, 1, 1, 0)  # 1 x 1
         self.bn1 = nn.BatchNorm2d(512)
-        self.conv2 = nn.ConvTranspose2d(512, 64, 5, 1, 0)  # 4 x 4
+        self.conv2 = nn.ConvTranspose2d(512, 64, 5, 1, 0)  # 5 x 5
         self.bn2 = nn.BatchNorm2d(64)
-        self.conv3 = nn.ConvTranspose2d(64, 64, 4, 2, 1)  # 8 x 8
-        self.bn3 = nn.BatchNorm2d(64)
-        self.conv4 = nn.ConvTranspose2d(64, 32, 4, 2, 1)  # 16 x 16
+        self.conv3 = nn.ConvTranspose2d(64, 32, 4, 2, 1)  # 10 x 10
+        self.bn3 = nn.BatchNorm2d(32)
+        self.conv4 = nn.ConvTranspose2d(32, 32, 4, 2, 1)  # 20 x 20
         self.bn4 = nn.BatchNorm2d(32)
-        self.conv5 = nn.ConvTranspose2d(32, 32, 4, 2, 1)  # 32 x 32
-        self.bn5 = nn.BatchNorm2d(32)
         self.conv_final = nn.ConvTranspose2d(32, 1, 4, 2, 1)
-
+        self.input_dim = input_dim
         # setup the non-linearity
         self.act = nn.ReLU(inplace=True)
+    def decode(self,z):
+        h = z.view( 1,z.size(0), 1, 1)
+        h = self.conv1(h)
+        h = self.conv2(h)
+        h = self.conv3(h)
+        h = self.conv4(h)
+        mu_img = self.conv_final(h)
+        return mu_img.view( mu_img.size(2),mu_img.size(3) )
 
     def forward(self, z):
         h = z.view(z.size(0), z.size(1), 1, 1)
@@ -108,9 +114,8 @@ class ConvDecoder(nn.Module):
         h = self.act(self.bn2(self.conv2(h)))
         h = self.act(self.bn3(self.conv3(h)))
         h = self.act(self.bn4(self.conv4(h)))
-        h = self.act(self.bn5(self.conv5(h)))
         mu_img = self.conv_final(h)
-        return mu_img
+        return mu_img.view(mu_img.size(0),mu_img.size(1),mu_img.size(2)*mu_img.size(3))
 
 class VariationalAutoencoder(nn.Module):
     def __init__(self, latent_dims):
@@ -133,7 +138,7 @@ class VariationalDeconvAutoencoder(nn.Module):
         self.encoder = VariationalEncoder(latent_dims)
         self.decoder = ConvDecoder(latent_dims)
     def decode(self,z):
-        return self.ConvDecoder(z)
+        return self.decoder.decode(z)
 
     def encode(self, x):
         return self.encoder.encode(x)
@@ -189,7 +194,7 @@ def generate_samples(model, z_input,n=1):
 if __name__ == '__main__':
     for beta in [0.1,0.2,0.5,0.7,1,2,5,20,100]:
         cfg = update_params_from_cmdline(default_params=default_parameters)
-        root=path_to_data=os.path.expanduser('~')+'/Dropbox/IsingData/'
+        root = './IsingData/' #path_to_data=os.path.expanduser('~')+'/Dropbox/IsingData/'
         X, Y = load_data_set(root= root)
         x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.8)
         x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:]))) # flatten each sample out
@@ -202,7 +207,7 @@ if __name__ == '__main__':
         latent_dims = 10
         vae = VariationalDeconvAutoencoder(latent_dims).to(device) # GPU
         vae = train(vae,train_loader,beta=beta )
-        torch.save(vae.state_dict(), './trained_models/Ising_dense_%d_beta_%.2f'%(latent_dims,beta))
+        torch.save(vae.state_dict(), './trained_models/Ising_dc_%d_beta_%.2f'%(latent_dims,beta))
 
 
 
